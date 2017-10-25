@@ -7,13 +7,22 @@ entity Front
 collections File
 
 
+newpage login
 User -> Front : access - Front
 Front --> User : response - Redirect to SSO
 User -> SSO : access - SSO with callback(Redirect to Front)
 SSO --> User : response - Issue cookie full token inside, Redirect to Front
+
+newpage use resource
+
 User -> Front : access - Front, Check cookie for validation
 User -> Front : request - Upload file
 Front --> User : response - Issue cookie compact token inside
 User -> File : request - Upload file
+
+newpage logout
+
+User -> SSO : access - SSO
+SSO --> User : response - Remove cookie
 
 @enduml
