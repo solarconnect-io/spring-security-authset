@@ -1,0 +1,19 @@
+@startuml
+
+actor User
+
+entity SSO
+entity Front
+collections File
+
+
+User -> Front : access - Front
+Front --> User : response - Redirect to SSO
+User -> SSO : access - SSO with callback(Redirect to Front)
+SSO --> User : response - Issue cookie full token inside, Redirect to Front
+User -> Front : access - Front, Check cookie for validation
+User -> Front : request - Upload file
+Front --> User : response - Issue cookie compact token inside
+User -> File : request - Upload file
+
+@enduml
