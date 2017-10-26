@@ -1,0 +1,6 @@
+rootProject.name = "sc-member-service"
+
+include "core"
+include "jwt"
+include "direct"
+include "oauth"
