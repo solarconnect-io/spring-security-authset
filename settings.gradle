@@ -1,4 +1,4 @@
-rootProject.name = "sc-member-service"
+rootProject.name = "spring-security-business"
 
 include "core"
 include "jwt"

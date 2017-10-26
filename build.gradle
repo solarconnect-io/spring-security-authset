@@ -3,22 +3,23 @@ buildscript {
 		jcenter()
 		mavenCentral()
 		maven {
-			url "https://plugins.gradle.org/m2/"
+			url 'https://plugins.gradle.org/m2/'
 		}
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${spring_boot_version}")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}")
-		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlin_version}")
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
 		classpath "com.google.protobuf:protobuf-gradle-plugin:$protobuf_gradle_plugin_version"
-		classpath("se.transmode.gradle:gradle-docker:$transmode_docker_gradle_plugin_version")
-//		classpath "com.bmuschko:gradle-docker-plugin:3.0.8"
-//		classpath "org.springframework:springloaded:1.2.7.RELEASE"
+		classpath "se.transmode.gradle:gradle-docker:$transmode_docker_gradle_plugin_version"
+//		classpath 'com.bmuschko:gradle-docker-plugin:3.0.8'
+//		classpath 'org.springframework:springloaded:1.2.7.RELEASE'
 //		classpath 'nu.studer:gradle-jooq-plugin:2.0.7'
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
 	}
 }
 
-apply plugin: "base"
+apply plugin: 'base'
 
 
 allprojects {
@@ -26,6 +27,7 @@ allprojects {
 	apply plugin: 'groovy'
 	apply plugin: 'kotlin'
 	apply plugin: 'kotlin-spring'
+	apply plugin: 'scala'
 	apply plugin: 'eclipse'
 //	apply plugin: 'eclipse-wtp'
 	apply plugin: 'idea'
@@ -35,7 +37,6 @@ allprojects {
 	version = project_version
 	sourceCompatibility = java_version
 	targetCompatibility = java_version
-//    buildDir = 'build'
 	compileKotlin {
 		kotlinOptions.jvmTarget = java_version
 	}
@@ -56,15 +57,15 @@ allprojects {
 	}
 
 	task printProjectName {
-		doLast{
+		doLast {
 			println "${project.name}"
 		}
 	}
-	task "create-dirs" {
+	task 'create-dirs' {
 		doLast {
 			sourceSets*.java.srcDirs*.each { it.mkdirs() }
-			sourceSets*.kotlin.srcDirs*.each { it.mkdirs() }
 			sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+			sourceSets*.kotlin.srcDirs*.each { it.mkdirs() }
 			sourceSets*.groovy.srcDirs*.each { it.mkdirs() }
 			sourceSets*.scala.srcDirs*.each { it.mkdirs() }
 		}
@@ -74,52 +75,120 @@ allprojects {
 		mavenCentral()
 		jcenter()
 		maven {
-			url  "https://dl.bintray.com/archmagece/jvm-repo"
+			url  'https://dl.bintray.com/archmagece/jvm-repo'
 		}
 		mavenLocal()
 	}
 
 	dependencies {
-		compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlin_version}")
-		compile("org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}")
-		
+		compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+		compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
 		compile "org.codehaus.groovy:groovy-all:$groovy_version"
-		
+
+		compileOnly "org.scala-lang:scala-library:$scala_version"
+		testCompileOnly "org.scala-lang:scala-library:$scala_version"
+		testCompile 'org.scalatest:scalatest_2.12:3.0.4'
+
 		compileOnly "org.projectlombok:lombok:$lombok_version"
 		testCompileOnly "org.projectlombok:lombok:$lombok_version"
 	}
 
-	task stage(dependsOn: ["build"])
+	task stage(dependsOn: ['build'])
 	build.mustRunAfter clean
+
+
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	apply plugin: 'com.jfrog.bintray'
+
+	def pomConfig = {
+		licenses {
+			license {
+				name 'MIT License'
+				url 'http://www.opensource.org/licenses/mit-license.php'
+				distribution 'repo'
+			}
+		}
+		developers {
+			developer {
+				id 'archmagece'
+				name 'archmagece'
+				email 'archmagece@gmail.com'
+			}
+		}
+
+		scm {
+			url 'https://github.com/solarconnect-io/spring-security-business.git'
+		}
+	}
+
+	task sourcesJar(type: Jar) {
+		from sourceSets.main.java.srcDirs
+		classifier = 'sources'
+	}
+
+//	task javadocJar(type: Jar, dependsOn: javadoc) {
+//		classifier = 'javadoc'
+//		from javadoc.destinationDir
+//	}
+
+	publishing {
+		publications {
+			MyPublication(MavenPublication) {
+				from components.java
+				artifact sourcesJar
+//				artifact javadocJar
+				groupId project_group
+				artifactId project.name
+				version project_version
+			}
+		}
+	}
+
+	bintray {
+		user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+		key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+		publications = ['MyPublication']
+		pkg {
+			repo = 'jvm-repo'
+			name = project.name
+			userOrg = 'archmagece'
+			licenses = ['MIT License']
+			vcsUrl = 'https://github.com/ScriptonBasestar-Lib/sb-tool-jvm.git'
+			version {
+				name = project_version
+				desc = "released at ${new Date()} : $project_version"
+				released = new Date()
+				vcsTag = project_version
+//				attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
+			}
+		}
+	}
 }
 
 subprojects {
-	apply plugin: "org.springframework.boot"
-
 	dependencies {
-//		runtime("org.springframework.boot:spring-boot-devtools")
-//		compile('org.springframework.session:spring-session')
-//		compileOnly("org.springframework.boot:spring-boot-configuration-processor")
-
-		//기타 필수
-//		compile group: "com.google.guava", name: "guava", version: guava_version
-//		compile group: "org.apache.commons", name: "commons-lang3", version: commons_lang3_version
-//		compile group: "commons-collections", name: "commons-collections", version: commons_collections_version
-
 		//test
-		testCompile("junit:junit")
-		testCompile("org.springframework.boot:spring-boot-starter-test")
-		testCompile("org.springframework.security:spring-security-test")
-		testCompile("com.jayway.jsonpath:json-path")
+		testCompile "junit:junit:$junit_version"
+		testCompile "org.springframework.boot:spring-boot-test:$spring_boot_version"
+		testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
+		testCompile "org.springframework.security:spring-security-test:$spring_security_version"
+		testCompile "com.jayway.jsonpath:json-path:$jayway_jsonpath_version"
+		testCompile "com.google.guava:guava-testlib:$guava_version"
 
 		//logging
-//		compile "org.slf4j:slf4j-api:$slf4j_version"
-//		runtime "org.slf4j:jcl-over-slf4j:$slf4j_version"
-//		compile "ch.qos.logback:logback-classic:$logback_version"
-//		compile "ch.qos.logback:logback-core:$logback_version"
+//		testCompile "org.slf4j:slf4j-api:$slf4j_version"
+//		testRuntime "org.slf4j:jcl-over-slf4j:$slf4j_version"
+//		testCompile "ch.qos.logback:logback-classic:$logback_version"
+//		testCompile "ch.qos.logback:logback-core:$logback_version"
+		compile "org.slf4j:slf4j-api:$slf4j_version"
+		runtime "org.slf4j:jcl-over-slf4j:$slf4j_version"
+		compile "ch.qos.logback:logback-classic:$logback_version"
+		compile "ch.qos.logback:logback-core:$logback_version"
 	}
 
 	clean {
-		delete "out"
+		delete 'out'
 	}
 }
