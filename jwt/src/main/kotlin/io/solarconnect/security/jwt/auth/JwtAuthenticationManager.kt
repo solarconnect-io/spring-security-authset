@@ -10,12 +10,10 @@ import org.springframework.security.core.Authentication
 class JwtAuthenticationManager<JWT_USER : JwtUser> : AuthenticationManager {
 
 	private val signingKey: String
-	private val findUserAuthorityService: FindUserAuthorityService
 	private val jwtHandler: JwtHandler<JWT_USER>
 
-	constructor(signingKey: String, findUserAuthorityService: FindUserAuthorityService, jwtHandler: JwtHandler<JWT_USER>) {
+	constructor(signingKey: String, jwtHandler: JwtHandler<JWT_USER>) {
 		this.signingKey = signingKey
-		this.findUserAuthorityService = findUserAuthorityService
 		this.jwtHandler = jwtHandler
 	}
 
