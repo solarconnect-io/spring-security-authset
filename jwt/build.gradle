@@ -1,3 +1,5 @@
 dependencies {
-    compile project(':core')
+	compile project(':core')
+
+	compile 'io.jsonwebtoken:jjwt:0.6.0'
 }

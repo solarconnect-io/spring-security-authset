@@ -1,9 +1,12 @@
 package io.solarconnect.security.jwt.auth
 
 import io.solarconnect.security.core.auth.FindUserAuthorityService
+import io.solarconnect.security.core.exception.NoAuthorityException
+import io.solarconnect.security.core.exception.NoRoleException
 import io.solarconnect.security.jwt.util.JwtUtil
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
 
 class JwtAuthenticationManager : AuthenticationManager {
 
@@ -16,15 +19,15 @@ class JwtAuthenticationManager : AuthenticationManager {
     }
 
     override fun authenticate(authentication: Authentication): Authentication {
+        //JwtPreAuthenticationToken
         if (authentication is JwtAuthenticationToken) {
             return authentication
         }
         val claims = JwtUtil.getBody(signingKey, authentication.credentials.toString())
-        if (claims.u() == null) {
-            throw NoRoleAuthenticationException("No roles for service..")
+        if (claims.authorities == null) {
+            throw NoAuthorityException("No authority for service..")
         }
-        val authorities = findUserAuthorityService.findGrantedAuthority(claims.getUserRoles().toArray(arrayOf<String>()))
-        return SBJwtAuthenticationToken(claims, authorities)
+        return JwtAuthenticationToken(claims, claims.authorities)
     }
 
 }

@@ -7,7 +7,7 @@ class JwtAuthenticationToken : AbstractAuthenticationToken {
 
     private val principal: JwtUser
 
-    constructor(principal: JwtUser, authorities : MutableCollection<GrantedAuthority>) : super(authorities){
+    constructor(principal: JwtUser, authorities : Collection<GrantedAuthority>) : super(authorities){
         this.principal = principal
     }
     override fun getCredentials(): Any? {
