@@ -4,11 +4,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 class DirectUsernamePasswordAuthenticationToken : UsernamePasswordAuthenticationToken {
 
-    val requestSignature: String
+	val requestSignature: String
 
-    constructor(principal:String,
-                credentials:String,
-                requestSignature:String) : super(principal, credentials){
-        this.requestSignature = requestSignature
-    }
+	constructor(principal: String,
+				credentials: String,
+				requestSignature: String) : super(principal, credentials) {
+		this.requestSignature = requestSignature
+	}
 }

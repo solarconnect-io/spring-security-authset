@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication
  */
 class OAuthAuthenticationProvider(val authenticationManager: OAuthAuthenticationManager) : AuthenticationProvider {
 
-	override fun authenticate(authentication: Authentication?): Authentication {
+	override fun authenticate(authentication: Authentication): Authentication {
 		return authenticationManager.authenticate(authentication)
 	}
 

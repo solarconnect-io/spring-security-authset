@@ -1,9 +1,8 @@
-package io.solarconnect.security.jwt.auth
+package io.solarconnect.security.oauth.auth
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
-import org.springframework.security.core.GrantedAuthority
 
-class JwtPreAuthenticationToken : AbstractAuthenticationToken {
+class OAuthPreAuthenticationToken : AbstractAuthenticationToken {
 
 	private val principal: Any?
 	private val credentials: String

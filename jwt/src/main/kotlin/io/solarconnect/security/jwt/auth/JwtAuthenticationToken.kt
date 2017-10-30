@@ -5,17 +5,18 @@ import org.springframework.security.core.GrantedAuthority
 
 class JwtAuthenticationToken : AbstractAuthenticationToken {
 
-    private val principal: JwtUser
+	private val principal: JwtUser
 
-    constructor(principal: JwtUser, authorities : Collection<GrantedAuthority>) : super(authorities){
-        this.principal = principal
-    }
-    override fun getCredentials(): Any? {
-        return null
-    }
+	constructor(principal: JwtUser, authorities: Collection<GrantedAuthority>) : super(authorities) {
+		this.principal = principal
+	}
 
-    override fun getPrincipal(): Any {
-        return principal
-    }
+	override fun getCredentials(): Any? {
+		return null
+	}
+
+	override fun getPrincipal(): Any {
+		return principal
+	}
 
 }

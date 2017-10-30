@@ -9,6 +9,5 @@ import javax.servlet.http.HttpServletResponse
  * @since 2017-10-30
  */
 interface JwtSsoHandler {
-
-	abstract fun postProcessing(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication)
+	fun postProcessing(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication)
 }

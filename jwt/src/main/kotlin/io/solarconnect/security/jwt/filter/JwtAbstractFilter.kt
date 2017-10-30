@@ -1,13 +1,16 @@
 package io.solarconnect.security.jwt.filter
 
+import io.solarconnect.security.core.SSBConstant
 import io.solarconnect.security.jwt.auth.JwtAuthenticationManager
+import io.solarconnect.security.jwt.auth.JwtPreAuthenticationToken
 import io.solarconnect.security.jwt.auth.JwtUser
-import lombok.Setter
 import org.scriptonbasestar.tool.core.exception.compiletime.SBTextExtractException
 import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.AuthenticationFailureHandler
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.util.Assert
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
@@ -22,22 +25,14 @@ import javax.servlet.http.HttpServletResponse
  */
 open abstract class JwtAbstractFilter : OncePerRequestFilter() {
 
-	@Setter
-	private val authenticationManager: JwtAuthenticationManager? = null
+	private lateinit var  authenticationManager: JwtAuthenticationManager<JwtUser>
 
 	//not null
-	@Setter
-	protected var serviceName: String? = null
+	protected lateinit var serviceName: String
 	//not null
-	@Setter
-	protected var signingKey: String? = null
+	protected lateinit var signingKey: String
 
-//	@Setter
-//	protected SBJwtSsoHandler sbJwtSsoHandler;
-
-	@Setter
 	protected var successHandler: AuthenticationSuccessHandler? = null
-	@Setter
 	protected var failureHandler: AuthenticationFailureHandler? = null
 
 	@Throws(ServletException::class)
@@ -66,7 +61,7 @@ open abstract class JwtAbstractFilter : OncePerRequestFilter() {
 
 		val authResult: Authentication
 		try {
-			authResult = authenticationManager!!.authenticate(JwtPreAuthenticateToken(token))
+			authResult = authenticationManager!!.authenticate(JwtPreAuthenticationToken(token))
 		} catch (failed: InternalAuthenticationServiceException) {
 			logger.error("An internal error occurred while trying to authenticate the user.", failed)
 			unsuccessfulAuthentication(request, response, failed)
@@ -111,10 +106,7 @@ open abstract class JwtAbstractFilter : OncePerRequestFilter() {
 		}
 		val user = authResult.principal as JwtUser
 
-		request.setAttribute(JwtUser.USER_ID, user.getUserId())
-		request.setAttribute(JwtUser.USER_USERNAME, user.getUsername())
-		request.setAttribute(JwtUser.USER_NICKNAME, user.getNickname())
-		request.setAttribute(JwtUser.USER_ROLE, user.getUserRoles())
+		request.setAttribute(SSBConstant.REQUEST_ATTR_NAME, user)
 
 		SecurityContextHolder.getContext().authentication = authResult
 
