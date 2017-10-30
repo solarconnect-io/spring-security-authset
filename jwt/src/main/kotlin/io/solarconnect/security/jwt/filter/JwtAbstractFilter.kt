@@ -25,15 +25,15 @@ import javax.servlet.http.HttpServletResponse
  */
 open abstract class JwtAbstractFilter : OncePerRequestFilter() {
 
-	private lateinit var  authenticationManager: JwtAuthenticationManager<JwtUser>
+	lateinit var  authenticationManager: JwtAuthenticationManager<JwtUser>
 
 	//not null
-	protected lateinit var serviceName: String
+	lateinit var serviceName: String
 	//not null
-	protected lateinit var signingKey: String
+	lateinit var signingKey: String
 
-	protected var successHandler: AuthenticationSuccessHandler? = null
-	protected var failureHandler: AuthenticationFailureHandler? = null
+	var successHandler: AuthenticationSuccessHandler? = null
+	var failureHandler: AuthenticationFailureHandler? = null
 
 	@Throws(ServletException::class)
 	override fun initFilterBean() {

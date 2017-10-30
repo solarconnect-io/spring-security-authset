@@ -100,12 +100,14 @@ allprojects {
 
 	apply plugin: 'maven'
 	apply plugin: 'maven-publish'
+//	apply plugin: 'org.jetbrains.dokka'
 	apply plugin: 'com.jfrog.bintray'
 
 	def pomConfig = {
 		licenses {
 			license {
-				name 'MIT License'
+//				name 'MIT License'
+				name 'MIT'
 				url 'http://www.opensource.org/licenses/mit-license.php'
 				distribution 'repo'
 			}
@@ -126,6 +128,11 @@ allprojects {
 	task sourcesJar(type: Jar) {
 		from sourceSets.main.java.srcDirs
 		classifier = 'sources'
+		from sourceSets.main.kotlin
+		duplicatesStrategy = "exclude"
+//		def platformSrc = sourceSets.main.kotlin
+//		def commonSrc = project(':common').sourceSets.main.kotlin
+//		from (platformSrc + commonSrc)
 	}
 
 //	task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -152,10 +159,10 @@ allprojects {
 		publications = ['MyPublication']
 		pkg {
 			repo = 'jvm-repo'
-			name = project.name
+			name = 'spring-security-business'
 			userOrg = 'archmagece'
-			licenses = ['MIT License']
-			vcsUrl = 'https://github.com/ScriptonBasestar-Lib/sb-tool-jvm.git'
+			licenses = ['MIT']
+			vcsUrl = 'https://github.com/solarconnect-io/spring-security-business.git'
 			version {
 				name = project_version
 				desc = "released at ${new Date()} : $project_version"

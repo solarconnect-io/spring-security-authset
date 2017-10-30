@@ -12,40 +12,40 @@ class SecurityCheckService(private val expressionHandler: MethodSecurityExpressi
 
 //	val log = LoggerFactory.getLogger(SecurityCheckService::class.qualifiedName)
 
-    private class SecurityObject {
-        fun triggerCheck() { /*NOP*/
-        }
-    }
+	private class SecurityObject {
+		fun triggerCheck() { /*NOP*/
+		}
+	}
 
-    companion object {
-        val log = LoggerFactory.getLogger(SecurityCheckService::class.qualifiedName)!!
-        private var triggerCheckMethod: Method? = null
-        private var parser: SpelExpressionParser? = null
+	companion object {
+		val log = LoggerFactory.getLogger(SecurityCheckService::class.qualifiedName)!!
+		private var triggerCheckMethod: Method? = null
+		private var parser: SpelExpressionParser? = null
 
-        init {
-            try {
-                triggerCheckMethod = SecurityObject::class.java.getMethod("triggerCheck")
-            } catch (e: NoSuchMethodException) {
-                log.error("no such method", e)
-            }
-            parser = SpelExpressionParser()
-        }
-    }
+		init {
+			try {
+				triggerCheckMethod = SecurityObject::class.java.getMethod("triggerCheck")
+			} catch (e: NoSuchMethodException) {
+				log.error("no such method", e)
+			}
+			parser = SpelExpressionParser()
+		}
+	}
 
-    fun check(securityExpression: String): Boolean {
-        if (log.isDebugEnabled) {
-            log.debug("Checking security expression [$securityExpression]...")
-        }
+	fun check(securityExpression: String): Boolean {
+		if (log.isDebugEnabled) {
+			log.debug("Checking security expression [$securityExpression]...")
+		}
 
-        val securityObject = SecurityObject()
-        //MethodSecurityExpressionHandler expressionHandler = ContextLoader.getCurrentWebApplicationContext().getBean(DefaultMethodSecurityExpressionHandler.class);
-        val evaluationContext = expressionHandler.createEvaluationContext(SecurityContextHolder.getContext().authentication, SimpleMethodInvocation(securityObject, triggerCheckMethod))
-        val checkResult = ExpressionUtils.evaluateAsBoolean(parser!!.parseExpression(securityExpression), evaluationContext)
+		val securityObject = SecurityObject()
+		//MethodSecurityExpressionHandler expressionHandler = ContextLoader.getCurrentWebApplicationContext().getBean(DefaultMethodSecurityExpressionHandler.class);
+		val evaluationContext = expressionHandler.createEvaluationContext(SecurityContextHolder.getContext().authentication, SimpleMethodInvocation(securityObject, triggerCheckMethod))
+		val checkResult = ExpressionUtils.evaluateAsBoolean(parser!!.parseExpression(securityExpression), evaluationContext)
 
-        if (log.isDebugEnabled) {
-            log.debug("Check result: " + checkResult)
-        }
+		if (log.isDebugEnabled) {
+			log.debug("Check result: " + checkResult)
+		}
 
-        return checkResult
-    }
+		return checkResult
+	}
 }

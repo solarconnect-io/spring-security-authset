@@ -1,6 +1,7 @@
 package io.solarconnect.security.jwt.filter
 
 import io.solarconnect.security.core.auth.FindUserAuthorityService
+import io.solarconnect.security.core.auth.SsoAuthSuccessHandler
 import io.solarconnect.security.jwt.auth.JwtUser
 import io.solarconnect.security.jwt.util.JwtCookieUtil
 import org.springframework.security.core.Authentication
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse
  * @author chaeeung.e
  * @since 2017-10-30
  */
-class JwtSsoDefaultHandler : JwtSsoHandler {
+class SsoJwtAuthSuccessHandler : SsoAuthSuccessHandler {
 
 	private val serviceName: String
 	private val signingKey: String
@@ -27,7 +28,7 @@ class JwtSsoDefaultHandler : JwtSsoHandler {
 	override fun postProcessing(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication) {
 		val claims = authentication.principal as JwtUser
 
-		for (domain in findUserAuthorityService.findUserComponent(claims.getUserId())) {
+		for (domain in findUserAuthorityService.findUserComponent(claims.userId)) {
 			JwtCookieUtil.tokenToCookie(response, domain, serviceName, signingKey, claims)
 		}
 	}

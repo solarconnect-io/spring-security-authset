@@ -1,9 +1,9 @@
 package io.solarconnect.security.direct.auth
 
-import org.springframework.security.core.userdetails.UserDetails
+import io.solarconnect.security.core.auth.BusinessUser
 
 /**
  * @author chaeeung.e
  * @since 2017-10-30
  */
-interface DirectUser : UserDetails
+interface DirectUser : BusinessUser
