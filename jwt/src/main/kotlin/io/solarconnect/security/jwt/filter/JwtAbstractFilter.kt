@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse
  * @author chaeeung.e
  * @since 2017-10-30
  */
-open abstract class JwtAbstractFilter : OncePerRequestFilter() {
+abstract class JwtAbstractFilter<USER_ID, JWT_USER : JwtUser<USER_ID>> : OncePerRequestFilter() {
 
-	lateinit var  authenticationManager: JwtAuthenticationManager<JwtUser>
+	lateinit var  authenticationManager: JwtAuthenticationManager<USER_ID, JWT_USER>
 
 	//not null
 	lateinit var serviceName: String
@@ -104,7 +104,7 @@ open abstract class JwtAbstractFilter : OncePerRequestFilter() {
 		if (logger.isDebugEnabled) {
 			logger.debug("Authentication success. Updating SecurityContextHolder to contain: " + authResult)
 		}
-		val user = authResult.principal as JwtUser
+		val user = authResult.principal as JwtUser<USER_ID>
 
 		request.setAttribute(SSBConstant.REQUEST_ATTR_NAME, user)
 

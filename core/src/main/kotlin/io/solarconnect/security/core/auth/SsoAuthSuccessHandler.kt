@@ -10,4 +10,5 @@ import javax.servlet.http.HttpServletResponse
  */
 interface SsoAuthSuccessHandler {
 	fun postProcessing(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication)
+	fun support(authentication: Authentication): Boolean
 }

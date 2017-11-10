@@ -4,18 +4,21 @@ package io.solarconnect.security.jwt.auth
  * @author chaeeung.e
  * @since 2017-10-30
  */
-object JwtClaimsParam {
+object JwtClaimParam {
 	object Header {
 		const val ALGORITHM = "alg"
 		const val TYPE = "typ"
 	}
 	object Payload {
-		const val USER_ID = "uid"
+		//global
+		const val USER_UNIQUE = "usr"
 		const val USER_NICKNAME = "nnm"
-		const val USER_USERNAME = "unm"
 		const val USER_ROLES = "uro"
+
+		//site
 		const val USER_PRINCIPALS = "upr"
 
+		//default
 		const val ISSUER = "iss"
 		const val SUBJECT = "sub"
 		const val AUDIENCE = "aud"

@@ -3,11 +3,11 @@ package io.solarconnect.security.jwt.auth
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
-class JwtAuthenticationToken : AbstractAuthenticationToken {
+class JwtAuthenticationToken<USER_ID> : AbstractAuthenticationToken {
 
-	private val principal: JwtUser
+	private val principal: JwtUser<USER_ID>
 
-	constructor(principal: JwtUser, authorities: Collection<GrantedAuthority>) : super(authorities) {
+	constructor(principal: JwtUser<USER_ID>, authorities: Collection<GrantedAuthority>) : super(authorities) {
 		this.principal = principal
 	}
 

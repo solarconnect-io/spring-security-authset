@@ -1,7 +1,8 @@
 package io.solarconnect.security.jwt.util
 
-import io.jsonwebtoken.Claims
+import com.auth0.jwt.interfaces.Claim
 import io.solarconnect.security.jwt.auth.JwtUser
+import io.solarconnect.security.jwt.custom.JwtHandler
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -12,8 +13,8 @@ import javax.servlet.http.HttpServletResponse
  */
 object JwtCookieUtil {
 
-	fun tokenToCookie(response: HttpServletResponse, domain: String, serviceName: String, signingKey: String, claims: Claims) {
-		val cookie = Cookie(serviceName, JwtUtil.generateToken(signingKey, claims))
+	fun <JWT_ID, JWT_USER : JwtUser<JWT_ID>>tokenToCookie(response: HttpServletResponse, domain: String, serviceName: String, signingKey: String, claim: Claim, jwtHandler: JwtHandler<JWT_ID, JWT_USER>) {
+		val cookie = Cookie(serviceName, jwtHandler.generateToken(signingKey, claim))
 		cookie.isHttpOnly = false
 		cookie.secure = false
 		cookie.domain = domain
@@ -24,27 +25,34 @@ object JwtCookieUtil {
 		response.addCookie(cookie)
 	}
 
-//	fun claimFromCookie(request: HttpServletRequest, serviceName: String, signingKey: String): JwtUser? {
-//		if (request.cookies == null) {
-//			return null
-//		}
-//		for (cookie in request.cookies) {
-//			if (cookie.name == serviceName) {
-//				return JwtUtil.getBody(signingKey, cookie.value)
-//			}
-//		}
-//		return null
-//	}
-
-	fun tokenFromCookie(request: HttpServletRequest, serviceName: String, signingKey: String): String? {
+	fun <JWT_ID, JWT_USER : JwtUser<JWT_ID>>claimFromCookie(request: HttpServletRequest, serviceName: String, signingKey: String, jwtHandler: JwtHandler<JWT_ID, JWT_USER>): JWT_USER? {
 		if (request.cookies == null) {
 			return null
 		}
 		for (cookie in request.cookies) {
 			if (cookie.name == serviceName) {
-				return cookie.value
+				return jwtHandler.generateUser(signingKey, cookie.value)
 			}
 		}
+//		request.cookies
+//				.asSequence()
+//				.filter { it.name == serviceName }
+//				.forEach { return jwtHandler.generateUser(signingKey, it.value) }
 		return null
+	}
+
+	fun tokenFromCookie(request: HttpServletRequest, serviceName: String, signingKey: String): String? {
+		if (request.cookies == null) {
+			return null
+		}
+//		for (cookie in request.cookies) {
+//			if (cookie.name == serviceName) {
+//				return cookie.value
+//			}
+//		}
+//		return null
+		return request.cookies
+				.firstOrNull { it.name == serviceName }
+				?.value
 	}
 }

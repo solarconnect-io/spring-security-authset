@@ -26,6 +26,8 @@ class DecodeMain {
             println(String(sha256_HMAC.doFinal(message.toByteArray())))
             println(String(Base64.getEncoder().encode(sha256_HMAC.doFinal(message.toByteArray()))))
             println(String(Base64.getDecoder().decode(sha256_HMAC.doFinal(message.toByteArray()))))
+
+
         }
 
     }

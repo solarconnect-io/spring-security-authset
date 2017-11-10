@@ -9,12 +9,12 @@ import org.springframework.security.core.GrantedAuthority
  * @author chaeeung.e
  * @since 2017-10-30
  */
-class OAuthAuthenticationManager : AuthenticationManager {
+class OAuthAuthenticationManager<USER_ID> : AuthenticationManager {
 
 	private val signingKey: String
-	private val findUserAuthorityService: FindUserAuthorityService
+	private val findUserAuthorityService: FindUserAuthorityService<USER_ID>
 
-	constructor(signingKey: String, findUserAuthorityService: FindUserAuthorityService) {
+	constructor(signingKey: String, findUserAuthorityService: FindUserAuthorityService<USER_ID>) {
 		this.signingKey = signingKey
 		this.findUserAuthorityService = findUserAuthorityService
 	}

@@ -2,13 +2,12 @@ package io.solarconnect.security.jwt.auth
 
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.AuthenticationException
 
-class JwtAuthenticationProvider<JWT_USER : JwtUser> : AuthenticationProvider {
+class JwtAuthenticationProvider<USER_ID, JWT_USER : JwtUser<USER_ID>> : AuthenticationProvider {
 
-	private val authenticationManager: JwtAuthenticationManager<JWT_USER>
+	private val authenticationManager: JwtAuthenticationManager<USER_ID, JWT_USER>
 
-	constructor(authenticationManager: JwtAuthenticationManager<JWT_USER>) {
+	constructor(authenticationManager: JwtAuthenticationManager<USER_ID, JWT_USER>) {
 		this.authenticationManager = authenticationManager
 	}
 

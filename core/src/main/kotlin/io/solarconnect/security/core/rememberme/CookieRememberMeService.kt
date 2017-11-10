@@ -23,7 +23,7 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class CookieRememberMeService : RememberMeServices, InitializingBean, LogoutHandler {
+class CookieRememberMeService<USER_ID> : RememberMeServices, InitializingBean, LogoutHandler {
 
     companion object {
         val logger = LoggerFactory.getLogger(CookieRememberMeService::class.java)
@@ -38,7 +38,7 @@ class CookieRememberMeService : RememberMeServices, InitializingBean, LogoutHand
 
     private val tokenRepository: RememberMeRepository
     private val cookieService: CookieService
-    private val findUserAuthorityService: FindUserAuthorityService
+    private val findUserAuthorityService: FindUserAuthorityService<USER_ID>
     private val random: SecureRandom = SecureRandom()
     private var userDetailsChecker: UserDetailsChecker = AccountStatusUserDetailsChecker()
 
@@ -52,7 +52,7 @@ class CookieRememberMeService : RememberMeServices, InitializingBean, LogoutHand
     private var cookieMaxAge = DEFAULT_COOKIE_MAX_AGE
     private var cookieSecure = DEFAULT_COOKIE_SECURE
 
-    constructor(signingKey: String, cookieService: CookieService, findUserAuthorityService: FindUserAuthorityService, rememberMeRepository: RememberMeRepository) {
+    constructor(signingKey: String, cookieService: CookieService, findUserAuthorityService: FindUserAuthorityService<USER_ID>, rememberMeRepository: RememberMeRepository) {
         this.signingKey = signingKey
         this.cookieService = cookieService
         this.findUserAuthorityService = findUserAuthorityService
