@@ -33,7 +33,7 @@ class DirectUsernamePasswordAuthenticationProvider : DaoAuthenticationProvider {
 	 */
 	override fun supports(authentication: Class<out Any>): Boolean {
 
-		return DirectUsernamePasswordAuthenticationToken::class.java!!.isAssignableFrom(authentication)
+		return DirectUsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication)
 	}
 
 	/*
@@ -101,15 +101,13 @@ class DirectUsernamePasswordAuthenticationProvider : DaoAuthenticationProvider {
 		val username = if (authentication.principal == null) "NONE_PROVIDED" else authentication.name
 
 		var cacheWasUsed = true
-		var user: UserDetails? = super.getUserCache().getUserFromCache(
-				username)
+		var user: UserDetails? = super.getUserCache().getUserFromCache(username)
 
 		if (user == null) {
 			cacheWasUsed = false
 
 			try {
-				user = retrieveUser(
-						username, authentication as UsernamePasswordAuthenticationToken)
+				user = retrieveUser(username, authentication as UsernamePasswordAuthenticationToken)
 			} catch (notFound: UsernameNotFoundException) {
 				log.debug("User '$username' not found")
 
@@ -128,15 +126,12 @@ class DirectUsernamePasswordAuthenticationProvider : DaoAuthenticationProvider {
 				// throw notFound;
 			}
 
-			Assert.notNull(
-					user, "retrieveUser returned null - a violation of the interface contract")
+			Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract")
 		}
 
 		try {
-			super.getPreAuthenticationChecks().check(
-					user)
-			additionalAuthenticationChecks(
-					user!!, authentication as UsernamePasswordAuthenticationToken)
+			super.getPreAuthenticationChecks().check(user)
+			additionalAuthenticationChecks(user!!, authentication as UsernamePasswordAuthenticationToken)
 		} catch (exception: AuthenticationException) {
 			if (cacheWasUsed) {
 				// There was a problem, so try again after checking
@@ -159,11 +154,11 @@ class DirectUsernamePasswordAuthenticationProvider : DaoAuthenticationProvider {
 		var principalToReturn: Any = user!!
 
 		if (super.isForcePrincipalAsString()) {
-			principalToReturn = user!!.username
+			principalToReturn = user.username
 		}
 
 		return createSuccessAuthentication(
-				principalToReturn, authentication, user!!)
+				principalToReturn, authentication, user)
 	}
 
 	override fun setPasswordEncoder(passwordEncoder: Any) {

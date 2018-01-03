@@ -16,6 +16,6 @@ class JwtAuthenticationProvider<USER_ID, JWT_USER : JwtUser<USER_ID>> : Authenti
 	}
 
 	override fun supports(authentication: Class<*>): Boolean {
-		return JwtAuthenticationToken::class.java!!.isAssignableFrom(authentication)
+		return JwtAuthenticationToken::class.java.isAssignableFrom(authentication)
 	}
 }
