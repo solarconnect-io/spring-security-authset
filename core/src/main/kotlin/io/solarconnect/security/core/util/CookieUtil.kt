@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse
  */
 object CookieUtil {
 
+	@JvmStatic
 	fun toCookie(response: HttpServletResponse, domain: String, serviceName: String, value:String) {
 		val cookie = Cookie(serviceName, value)
 		cookie.isHttpOnly = false
@@ -22,6 +23,7 @@ object CookieUtil {
 		response.addCookie(cookie)
 	}
 
+	@JvmStatic
 	fun fromCookie(request: HttpServletRequest, serviceName: String): String? {
 		if (request.cookies == null) {
 			return null
@@ -37,6 +39,7 @@ object CookieUtil {
 				?.value
 	}
 
+	@JvmStatic
 	fun add(request: HttpServletRequest, response: HttpServletResponse, cookieName: String, cookieDomain: String?, cookieValue: String, maxAge: Int, secureCookie: Boolean) {
 		val cookie = Cookie(cookieName, cookieValue)
 		cookie.maxAge = maxAge
@@ -51,6 +54,7 @@ object CookieUtil {
 		response.addCookie(cookie)
 	}
 
+	@JvmStatic
 	fun cancel(request: HttpServletRequest, response: HttpServletResponse, cookieName: String, cookieDomain: String?) {
 		val cookie = Cookie(cookieName, null)
 		cookie.maxAge = 0
@@ -61,6 +65,7 @@ object CookieUtil {
 		response.addCookie(cookie)
 	}
 
+	@JvmStatic
 	private fun getCookiePath(request: HttpServletRequest): String {
 		val contextPath = request.contextPath
 		return if (contextPath.length > 0) contextPath else "/"
