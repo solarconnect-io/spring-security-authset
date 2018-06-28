@@ -1,10 +1,10 @@
 package io.solarconnect.security.jwt.filter
 
 import io.solarconnect.security.core.SSBConstant
+import io.solarconnect.security.core.exception.JwtTextExtractException
 import io.solarconnect.security.jwt.auth.JwtAuthenticationManager
 import io.solarconnect.security.jwt.auth.JwtPreAuthenticationToken
 import io.solarconnect.security.jwt.auth.JwtUser
-import org.scriptonbasestar.tool.core.exception.compiletime.SBTextExtractException
 import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
@@ -53,7 +53,7 @@ abstract class JwtAbstractFilter<USER_ID, JWT_USER : JwtUser<USER_ID>> : OncePer
 		var token: String? = null
 		try {
 			token = extractTokenString(request, response)
-		} catch (e: SBTextExtractException) {
+		} catch (e: JwtTextExtractException) {
 			//			e.printStackTrace();
 			filterChain.doFilter(request, response)
 			return
@@ -77,7 +77,7 @@ abstract class JwtAbstractFilter<USER_ID, JWT_USER : JwtUser<USER_ID>> : OncePer
 		filterChain.doFilter(request, response)
 	}
 
-	@Throws(SBTextExtractException::class)
+	@Throws(JwtTextExtractException::class)
 	protected abstract fun extractTokenString(request: HttpServletRequest, response: HttpServletResponse): String
 
 

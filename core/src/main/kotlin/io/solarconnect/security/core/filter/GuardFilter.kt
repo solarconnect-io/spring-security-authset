@@ -1,8 +1,8 @@
 package io.solarconnect.security.core.filter
 
-import org.scriptonbasestar.tool.core.check.Check
 import org.springframework.http.HttpHeaders
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -19,12 +19,8 @@ class GuardByKeySecretFilter : OncePerRequestFilter() {
     lateinit var authSecret: String
 
     override fun initFilterBean(){
-//		this.authKey = filterConfig.getInitParameter("config.server.auth-key").trim()+" "
-//		this.authKeyLength = authKey.length
-//		this.authCode = filterConfig.getInitParameter("config.server.auth-code")
-
-        Check.notNullOrEmptyString(authKey, "authKey must have value")
-        Check.notNullOrEmptyString(authSecret, "authSecret must have value")
+        Assert.isTrue(!StringUtils.isEmpty(authKey), "authKey must have value")
+        Assert.isTrue(!StringUtils.isEmpty(authSecret), "authSecret must have value")
         this.authKeyLength = authKey.length
     }
 

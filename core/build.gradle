@@ -1,7 +1,7 @@
 dependencies {
-    compile "org.scriptonbasestar.tool:core:$sb_tool_version"
-    compile "org.scriptonbasestar.tool:collection:$sb_tool_version"
-    compile "org.scriptonbasestar.tool:validation:$sb_tool_version"
+//    compile "org.scriptonbasestar.tool:core:$sb_tool_version"
+//    compile "org.scriptonbasestar.tool:collection:$sb_tool_version"
+//    compile "org.scriptonbasestar.tool:validation:$sb_tool_version"
 
     compile "javax.servlet:javax.servlet-api:$javax_servlet_version"
     compile "org.springframework.boot:spring-boot-starter-security:$spring_boot_version"
